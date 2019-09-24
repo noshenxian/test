@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="false">
+    <!--定义日志文件的存储地址和前缀名-->
+    <springProperty scope="context" name="log.base" source="log.base" defaultValue="/data/igsp/logs" />
+    <springProperty scope="context" name="spring.application.name" source="spring.application.name"/>
+    <springProperty scope="context" name="server.port" source="server.port" />
+    <property name="LOG_HOME" value="${log.base}/${spring.application.name}" />
+    <property name="LOG_PREFIX" value="${spring.application.name}-${server.port}" />
+
+    <!-- 一般信息按照每天生成日志文件 -->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/${LOG_PREFIX}-info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 每天一归档 -->
+            <fileNamePattern>${LOG_HOME}/${LOG_PREFIX}-info-%d{yyyyMMdd}.log.%i</fileNamePattern>
+            <!-- 单个日志文件最多100MB, 7天的日志周期，最大不能超过1GB -->
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!--错误信息按照每天生成日志文件-->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <File>${LOG_HOME}/${LOG_PREFIX}-error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 每天一归档 -->
+            <fileNamePattern>${LOG_HOME}/${LOG_PREFIX}-error-%d{yyyyMMdd}.log.%i</fileNamePattern>
+            <!-- 单个日志文件最多100MB, 7天的日志周期，最大不能超过1GB -->
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--  输出SQL -->
+    <logger name="org.hibernate.SQL" additivity="false" level="DEBUG">
+        <appender-ref ref="INFO_FILE" />
+    </logger>
+    <logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" additivity="false" level="ERROR">
+        <appender-ref ref="INFO_FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </logger>
+    <!-- 输出SQL的参数 -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE">
+        <appender-ref ref="INFO_FILE" />
+    </logger>
+    <logger name="org.hibernate.engine.QueryParameters" additivity="false" level="DEBUG">
+        <appender-ref ref="INFO_FILE" />
+    </logger>
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" additivity="false" level="DEBUG">
+        <appender-ref ref="INFO_FILE" />
+    </logger>
+
+    <!-- 输出mongodb -->
+    <logger name="org.springframework.data.mongodb.core.MongoTemplate" additivity="false" level="DEBUG">
+        <appender-ref ref="INFO_FILE" />
+    </logger>
+
+    <!-- 日志输出级别  -->
+    <root level="INFO">
+        <!-- 信息打印到控制台 -->
+        <appender-ref ref="STDOUT" />
+        <!-- 信息输出到文件 -->
+        <appender-ref ref="INFO_FILE" />
+        <!-- 异常信息输出到文件 -->
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+
+</configuration>

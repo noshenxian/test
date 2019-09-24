@@ -1,0 +1,19 @@
+部署模块机器的HOST配置：
+linux：
+/etc/hosts
+windows:
+C:\Windows\System32\drivers\etc
+
+内容：
+192.168.1.21   fastdfs1.igsp.local
+192.168.1.21   mongodb1.igsp.local
+192.168.1.21   sp.igsp.local
+192.168.1.220  oracle.igsp.local
+192.168.1.21   redis1.igsp.local
+192.168.1.21   redis2.igsp.local
+192.168.1.21   redis3.igsp.local
+192.168.1.21   rocketmq1.igsp.local
+192.168.1.21   es1.igsp.local
+192.168.1.21   zookeeper1.igsp.local
+192.168.1.21   kafka1.igsp.local
+192.168.1.21   eureka1.igsp.local

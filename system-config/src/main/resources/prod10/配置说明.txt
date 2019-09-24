@@ -1,0 +1,4 @@
+服务器地址：10.145.194.60
+配置文件路径：/usr/local/soft/igsp-app/system-config/prod10
+
+如需本地调试，请把服务器的配置文件复制到本地即可！！！
